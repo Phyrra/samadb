@@ -1,25 +1,44 @@
 package ch.sama.db.query.select;
 
 import ch.sama.db.base.NotANumberException;
+import ch.sama.db.base.UnknownFieldException;
 import ch.sama.db.data.DataRow;
+import ch.sama.db.data.UnknownAliasException;
 
+import java.util.Map;
 import java.util.function.Function;
 
 public class WhereCondition {
-    public static Function<DataRow, Boolean> eq(String field, Object value) {
-        return row -> {
-            Object fieldVal = row.get(field);
+    private static Object getValue(Map<String, Map<String, Object>> row, String key) {
+        String alias;
+        String field;
 
-            if (fieldVal == null) {
-                return value == null;
+        int idx = key.indexOf(".");
+        if (idx == -1) {
+            // TODO: Find field if it is unique?
+
+            if (row.keySet().size() > 1) {
+                throw new UnknownFieldException(key);
             }
 
-            return row.get(field).equals(value);
-        };
-    }
+            alias = row.keySet().iterator().next();
+            field = key;
+        } else {
+            alias = key.substring(0, idx);
+            field = key.substring(idx + 1);
+        }
 
-    public static Function<DataRow, Boolean> neq(String field, Object value) {
-        return row -> !eq(field, value).apply(row);
+        if (!row.containsKey(alias)) {
+            throw new UnknownAliasException(alias);
+        }
+
+        Map<String, Object> set = row.get(alias);
+
+        if (!set.containsKey(field)) {
+            throw new UnknownFieldException(alias, field);
+        }
+
+        return set.get(field);
     }
 
     private static double toNumber(String field, Object value) throws NotANumberException {
@@ -46,43 +65,59 @@ public class WhereCondition {
         throw new NotANumberException(field);
     }
 
-    public static Function<DataRow, Boolean> lt(String field, Double value) {
+    public static Function<Map<String, Map<String, Object>>, Boolean> eq(String field, Object value) {
         return row -> {
-            Object fieldVal = row.get(field);
+            Object fieldVal = getValue(row, field);
+
+            if (fieldVal == null) {
+                return value == null;
+            }
+
+            return fieldVal.equals(value);
+        };
+    }
+
+    public static Function<Map<String, Map<String, Object>>, Boolean> neq(String field, Object value) {
+        return row -> !eq(field, value).apply(row);
+    }
+
+    public static Function<Map<String, Map<String, Object>>, Boolean> lt(String field, Double value) {
+        return row -> {
+            Object fieldVal = getValue(row, field);
 
             return fieldVal != null && toNumber(field, fieldVal) < value;
 
         };
     }
 
-    public static Function<DataRow, Boolean> gt(String field, Double value) {
+    public static Function<Map<String, Map<String, Object>>, Boolean> gt(String field, Double value) {
         return row -> {
-            Object fieldVal = row.get(field);
+            Object fieldVal = getValue(row, field);
 
             return fieldVal != null && toNumber(field, fieldVal) > value;
 
         };
     }
 
-    public static Function<DataRow, Boolean> lte(String field, Double value) {
+    public static Function<Map<String, Map<String, Object>>, Boolean> lte(String field, Double value) {
         return row -> {
-            Object fieldVal = row.get(field);
+            Object fieldVal = getValue(row, field);
 
             return fieldVal != null && toNumber(field, fieldVal) <= value;
 
         };
     }
 
-    public static Function<DataRow, Boolean> gte(String field, Double value) {
+    public static Function<Map<String, Map<String, Object>>, Boolean> gte(String field, Double value) {
         return row -> {
-            Object fieldVal = row.get(field);
+            Object fieldVal = getValue(row, field);
 
             return fieldVal != null && toNumber(field, fieldVal) >= value;
 
         };
     }
 
-    public Function<DataRow, Boolean> isNull(String field) {
-        return row -> row.get(field) == null;
+    public Function<Map<String, Map<String, Object>>, Boolean> isNull(String field) {
+        return row -> getValue(row, field) == null;
     }
 }

@@ -19,11 +19,13 @@ public class Datastore {
         this.data = new HashMap<String, DataSet>();
     }
 
-    public void addTable(Table table) {
+    public Datastore addTable(Table table) {
         String tableName = table.getName();
 
         tables.put(tableName, table);
         data.put(tableName, new DataSet());
+
+        return this;
     }
 
     public boolean hasTable(Table table) {

@@ -3,38 +3,41 @@ package ch.sama.db.query.select;
 import ch.sama.db.Datastore;
 import ch.sama.db.base.UnknownFieldException;
 import ch.sama.db.base.UnknownTableException;
+import ch.sama.db.data.DataContext;
 import ch.sama.db.data.DataRow;
 import ch.sama.db.data.DataSet;
+import ch.sama.db.data.Tupel;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SelectWhere {
     private SelectFrom parent;
-    private Function<DataRow, Boolean> filter;
+    private Function<Map<String, Map<String, Object>>, Boolean> filter;
 
-    SelectWhere(SelectFrom parent, Function<DataRow, Boolean> filter) {
+    SelectWhere(SelectFrom parent, Function<Map<String, Map<String, Object>>, Boolean> filter) {
         this.parent = parent;
         this.filter = filter;
     }
 
-    public List<Map<String, Object>> execute() throws UnknownTableException, UnknownFieldException {
-        Datastore datastore = parent.getDatastore();
-        String table = parent.getTable();
+    public DataContext getContext() {
+        DataContext context = parent.getContext();
 
-        if (!datastore.hasTable(table)) {
-            throw new UnknownTableException(table);
-        }
+        Set<String> knownAliases = context.getKnownAliases();
+        List<Map<String, Map<String, Object>>> data = context.getData();
 
-        DataSet data = datastore.getData(table);
+        return new DataContext(
+                knownAliases,
+                data.stream()
+                        .filter(row -> filter.apply(row))
+                        .collect(Collectors.toList())
+        );
+    }
 
-        List<String> fields = parent.getFields();
-
-        return data.getRows().stream()
-                .filter(row -> filter.apply(row))
-                .map(row -> row.toMap(fields))
-                .collect(Collectors.toList());
+    public List<List<Tupel>> execute() throws UnknownTableException, UnknownFieldException {
+        return getContext().getFlattened();
     }
 }

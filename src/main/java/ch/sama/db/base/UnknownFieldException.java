@@ -8,4 +8,8 @@ public class UnknownFieldException extends RuntimeException {
     public UnknownFieldException(Field field) {
         this(field.getName());
     }
+
+    public UnknownFieldException(String alias, String field) {
+        this(alias + "." + field);
+    }
 }
