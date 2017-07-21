@@ -121,16 +121,8 @@ class JoinBuilder {
 					joined.addAll(results);
 				} else {
 					Map<String, Map<String, Object>> newSet = new HashMap<>();
-
 					row.keySet()
 							.forEach(key -> newSet.put(key, row.get(key)));
-
-					Map<String, Object> empty = new HashMap<>();
-
-					tbl.getFields()
-							.forEach(field -> empty.put(field.getName(), null));
-
-					newSet.put(alias, empty);
 
 					joined.add(newSet);
 				}
@@ -139,7 +131,7 @@ class JoinBuilder {
 			return new DataContext(
 					knownAliases,
 					joined
-			);
+			).fill();
 		}
 	}
 
@@ -192,18 +184,7 @@ class JoinBuilder {
 							joined.addAll(results);
 						} else {
 							Map<String, Map<String, Object>> newSet = new HashMap<>();
-
 							newSet.put(alias, rowMap);
-
-							// hmmm.. risky?
-							data.get(0).keySet()
-									.forEach(key -> {
-										Map<String, Object> empty = new HashMap<>();
-										data.get(0).get(key).keySet()
-												.forEach(innerKey -> empty.put(innerKey, null));
-
-										newSet.put(key, empty);
-									});
 
 							joined.add(newSet);
 						}
@@ -212,7 +193,7 @@ class JoinBuilder {
 			return new DataContext(
 					knownAliases,
 					joined
-			);
+			).fill();
 		}
 	}
 

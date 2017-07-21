@@ -1,10 +1,7 @@
 package ch.sama.db.data;
 
-import ch.sama.db.base.UnknownFieldException;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 public class DataContext {
     private Set<String> knownAliases;
@@ -41,6 +38,35 @@ public class DataContext {
     public Set<String> getKnownAliases() {
         return knownAliases;
     }
+
+    public DataContext fill() {
+    	Map<String, Map<String, Object>> fullMap = new HashMap<>();
+
+    	knownAliases.forEach(alias -> {
+    		Map<String, Object> map = data.stream()
+					.filter(row -> {
+						return row.containsKey(alias);
+					})
+					.findFirst()
+					.get()
+					.get(alias);
+
+    		Map<String, Object> empty = new HashMap<>();
+    		map.keySet().forEach(key -> empty.put(key, null));
+
+    		fullMap.put(alias, empty);
+		});
+
+    	data.forEach(row -> {
+    		knownAliases.stream()
+					.filter(alias -> !row.containsKey(alias))
+					.forEach(alias -> {
+						row.put(alias, fullMap.get(alias));
+					});
+		});
+
+    	return this;
+	}
 
     public List<List<Tupel>> getFlattened() {
         return data.stream()
