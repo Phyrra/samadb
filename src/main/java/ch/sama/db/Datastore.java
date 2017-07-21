@@ -59,6 +59,6 @@ public class Datastore {
     }
 
     public Select select(String... fields) {
-        return new Select(this, Arrays.asList(fields));
+        return new Select(this, fields);
     }
 }

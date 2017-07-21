@@ -1,12 +1,11 @@
 package ch.sama.db.query.insert;
 
 import ch.sama.db.Datastore;
-import ch.sama.db.query.IStatement;
 
 import java.util.Arrays;
 import java.util.Map;
 
-public class InsertInto implements IStatement {
+public class InsertInto {
     private Insert parent;
     private String table;
 

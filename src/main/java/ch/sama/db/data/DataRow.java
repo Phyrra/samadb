@@ -29,11 +29,7 @@ public class DataRow {
         row.put(key, value);
     }
 
-    public Map<String, Object> toMap(List<String> fields) throws UnknownFieldException {
-        Map<String, Object> map = new HashMap<>();
-
-        fields.forEach(field -> map.put(field, get(field)));
-
-        return map;
+    public Map<String, Object> toMap() throws UnknownFieldException {
+        return row;
     }
 }

@@ -1,11 +1,7 @@
 package ch.sama.db.base;
 
 public class NotANumberException extends RuntimeException {
-    public NotANumberException(String field) {
-        super("Field {" + field + "} is not a number");
-    }
-
-    public NotANumberException(Field field) {
-        this(field.getName());
+    public NotANumberException(Object obj) {
+        super("Field {" + (obj == null ? "null" : obj.toString()) + "} is not a number");
     }
 }

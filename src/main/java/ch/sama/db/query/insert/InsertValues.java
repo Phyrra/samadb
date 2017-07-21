@@ -5,12 +5,11 @@ import ch.sama.db.base.*;
 import ch.sama.db.data.DataRow;
 import ch.sama.db.data.DataSet;
 import ch.sama.db.data.IncompleteRowException;
-import ch.sama.db.query.IStatement;
 
 import java.util.List;
 import java.util.Map;
 
-public class InsertValues implements IStatement {
+public class InsertValues {
     private InsertInto parent;
     private List<Map<String, Object>> rows;
 

@@ -10,28 +10,18 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SelectWhere implements IStatement {
-    private IStatement parent;
+public class SelectJoinAsOn implements IStatement {
+    private SelectJoinAs parent;
     private Function<Map<String, Map<String, Object>>, Boolean> filter;
 
-    SelectWhere(IStatement parent, Function<Map<String, Map<String, Object>>, Boolean> filter) {
+    SelectJoinAsOn(SelectJoinAs parent, Function<Map<String, Map<String, Object>>, Boolean> filter) {
         this.parent = parent;
         this.filter = filter;
     }
 
     @Override
     public DataContext getContext() {
-        DataContext context = parent.getContext();
-
-        Set<String> knownAliases = context.getKnownAliases();
-        List<Map<String, Map<String, Object>>> data = context.getData();
-
-        return new DataContext(
-                knownAliases,
-                data.stream()
-                        .filter(filter::apply)
-                        .collect(Collectors.toList())
-        );
+        return parent.getContext(filter);
     }
 
     @Override
@@ -42,5 +32,13 @@ public class SelectWhere implements IStatement {
     @Override
     public List<List<Tupel>> execute() {
         return getFilteredContext(getContext()).getFlattened();
+    }
+
+    public SelectWhere where(Function<Map<String, Map<String, Object>>, Boolean> filter) {
+        return new SelectWhere(this, filter);
+    }
+
+    public SelectJoin join(String table) {
+        return new SelectJoin(parent.getDatastore(),this, table);
     }
 }

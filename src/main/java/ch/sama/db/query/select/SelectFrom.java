@@ -1,51 +1,33 @@
 package ch.sama.db.query.select;
 
 import ch.sama.db.Datastore;
-import ch.sama.db.base.UnknownFieldException;
+import ch.sama.db.base.Table;
 import ch.sama.db.base.UnknownTableException;
 import ch.sama.db.data.DataContext;
 import ch.sama.db.data.DataRow;
 import ch.sama.db.data.DataSet;
 import ch.sama.db.data.Tupel;
+import ch.sama.db.query.IStatement;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-public class SelectFrom {
+public class SelectFrom implements IStatement {
     private Select parent;
     private String table;
-    private String alias;
 
     SelectFrom(Select parent, String table) {
         this.parent = parent;
         this.table = table;
-        this.alias = null;
     }
 
     Datastore getDatastore() {
         return parent.getDatastore();
     }
 
-    String getTable() {
-        return table;
-    }
-
-    List<String> getFields() {
-        return parent.getFields();
-    }
-
-    private String getAlias() {
-        if (alias != null) {
-            return alias;
-        }
-
-        return table;
-    }
-
-    public DataContext getContext() {
+    DataContext getContext(String alias) throws UnknownTableException {
         Datastore datastore = parent.getDatastore();
 
         if (!datastore.hasTable(table)) {
@@ -54,14 +36,11 @@ public class SelectFrom {
 
         DataSet data = datastore.getData(table);
 
-        String alias = getAlias();
-        List<String> fields = parent.getFields();
-
         DataContext context = new DataContext();
         context.registerAlias(alias);
 
         data.getRows().stream()
-                .map(row -> row.toMap(fields))
+                .map(DataRow::toMap)
                 .map(row -> {
                     Map<String, Map<String, Object>> map = new HashMap<>();
                     map.put(alias, row);
@@ -73,17 +52,30 @@ public class SelectFrom {
         return context;
     }
 
-    public List<List<Tupel>> execute() throws UnknownTableException, UnknownFieldException {
-        return getContext().getFlattened();
+    @Override
+    public DataContext getContext() {
+        return getContext(table);
     }
 
-    public SelectFrom as(String alias) {
-        this.alias = alias;
+    @Override
+    public DataContext getFilteredContext(DataContext context) {
+        return parent.getFilteredContext(context);
+    }
 
-        return this;
+    @Override
+    public List<List<Tupel>> execute() {
+        return getFilteredContext(getContext()).getFlattened();
+    }
+
+    public SelectFromAs as(String alias) {
+        return new SelectFromAs(this, alias);
     }
 
     public SelectWhere where(Function<Map<String, Map<String, Object>>, Boolean> filter) {
         return new SelectWhere(this, filter);
+    }
+
+    public SelectJoin join(String table) {
+        return new SelectJoin(getDatastore(), this, table);
     }
 }

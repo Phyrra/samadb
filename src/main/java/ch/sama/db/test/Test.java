@@ -40,13 +40,13 @@ public class Test {
                 )
                 .execute();
 
-        List<List<Tupel>> result1 = datastore.select("a", "b")
+        List<List<Tupel>> result1 = datastore.select("*")
                 .from("test")
                 .execute();
 
         printResult(result1);
 
-        List<List<Tupel>> result2 = datastore.select("a", "b")
+        List<List<Tupel>> result2 = datastore.select("t.a")
                 .from("test").as("t")
                 .where(gt("t.b", 17.0))
                 .execute();

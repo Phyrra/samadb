@@ -1,27 +1,37 @@
 package ch.sama.db.query.select;
 
+import ch.sama.db.Datastore;
 import ch.sama.db.data.DataContext;
 import ch.sama.db.data.Tupel;
 import ch.sama.db.query.IStatement;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SelectWhere implements IStatement {
+public class SelectJoin {
+    private Datastore datastore;
     private IStatement parent;
-    private Function<Map<String, Map<String, Object>>, Boolean> filter;
+    private String table;
 
-    SelectWhere(IStatement parent, Function<Map<String, Map<String, Object>>, Boolean> filter) {
+    SelectJoin(Datastore datastore, IStatement parent, String table) {
+        this.datastore = datastore;
         this.parent = parent;
-        this.filter = filter;
+        this.table = table;
     }
 
-    @Override
-    public DataContext getContext() {
+    Datastore getDatastore() {
+        return datastore;
+    }
+
+    // TODO: Other than inner joins?
+    DataContext getContext(String alias, Function<Map<String, Map<String, Object>>, Boolean> filter) {
         DataContext context = parent.getContext();
+
+        context.registerAlias(alias);
 
         Set<String> knownAliases = context.getKnownAliases();
         List<Map<String, Map<String, Object>>> data = context.getData();
@@ -34,13 +44,11 @@ public class SelectWhere implements IStatement {
         );
     }
 
-    @Override
-    public DataContext getFilteredContext(DataContext context) {
+    DataContext getFilteredContext(DataContext context) {
         return parent.getFilteredContext(context);
     }
 
-    @Override
-    public List<List<Tupel>> execute() {
-        return getFilteredContext(getContext()).getFlattened();
+    public SelectJoinAs as(String alias) {
+        return new SelectJoinAs(this, alias);
     }
 }

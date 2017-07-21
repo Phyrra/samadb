@@ -2,9 +2,8 @@ package ch.sama.db.query.insert;
 
 import ch.sama.db.Datastore;
 import ch.sama.db.base.Table;
-import ch.sama.db.query.IStatement;
 
-public class Insert implements IStatement {
+public class Insert {
     private Datastore datastore;
 
     public Insert(Datastore datastore) {
