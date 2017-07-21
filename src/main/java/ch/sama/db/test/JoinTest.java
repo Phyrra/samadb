@@ -39,7 +39,11 @@ public class JoinTest {
                         new HashMap<String, Object>() {{
                             put("id", 2);
                             put("name", "Eve");
-                        }}
+                        }},
+						new HashMap<String, Object>() {{
+							put("id", 3);
+							put("name", "Charlie");
+						}}
                 )
                 .execute();
 
@@ -60,6 +64,11 @@ public class JoinTest {
 							put("id", 3);
 							put("bank", "UBS");
 							put("ref", 2);
+						}},
+						new HashMap<String, Object>() {{
+							put("id", 4);
+							put("bank", "UBS");
+							put("ref", 4);
 						}}
 				)
 				.execute();
