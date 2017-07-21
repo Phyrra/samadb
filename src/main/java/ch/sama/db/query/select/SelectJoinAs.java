@@ -22,7 +22,7 @@ public class SelectJoinAs implements ISelectJoin {
 
     @Override
     public DataContext getContext(Function<Map<String, Map<String, Object>>, Boolean> filter) {
-        return parent.getContext(alias, filter);
+        return parent.getContext(JoinBuilder.Type.INNER, alias, filter);
     }
 
 	@Override
