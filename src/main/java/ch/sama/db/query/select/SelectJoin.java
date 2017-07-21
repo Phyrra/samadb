@@ -21,14 +21,6 @@ public class SelectJoin implements ISelectJoin {
         this.table = table;
     }
 
-    private List<Map<String, Map<String, Object>>> innerJoin(String alias) throws UnknownTableException {
-    	List<Map<String, Map<String, Object>>> joined = new ArrayList<>();
-
-
-
-    	return joined;
-	}
-
 	@Override
 	public DataContext getContext(Function<Map<String, Map<String, Object>>, Boolean> filter) {
     	return getContext(table, filter);
