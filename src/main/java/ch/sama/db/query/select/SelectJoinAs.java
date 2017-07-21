@@ -5,34 +5,32 @@ import ch.sama.db.data.DataContext;
 import ch.sama.db.data.Tupel;
 import ch.sama.db.query.IStatement;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
-public class SelectJoinAs {
+public class SelectJoinAs implements ISelectJoin {
+	private Datastore datastore;
     private SelectJoin parent;
     private String alias;
 
-    SelectJoinAs(SelectJoin parent, String alias) {
+    SelectJoinAs(Datastore datastore, SelectJoin parent, String alias) {
+    	this.datastore = datastore;
         this.parent = parent;
         this.alias = alias;
     }
 
-    Datastore getDatastore() {
-        return parent.getDatastore();
-    }
-
-    DataContext getContext(Function<Map<String, Map<String, Object>>, Boolean> filter) {
+    @Override
+    public DataContext getContext(Function<Map<String, Map<String, Object>>, Boolean> filter) {
         return parent.getContext(alias, filter);
     }
 
-    DataContext getFilteredContext(DataContext context) {
-        return parent.getFilteredContext(context);
-    }
+	@Override
+	public DataContext getFilteredContext(DataContext context) {
+		return parent.getFilteredContext(context);
+	}
 
-    public SelectJoinAsOn on(Function<Map<String, Map<String, Object>>, Boolean> filter) {
-        return new SelectJoinAsOn(this, filter);
+    public SelectJoinOn on(Function<Map<String, Map<String, Object>>, Boolean> filter) {
+        return new SelectJoinOn(datastore, this, filter);
     }
 }

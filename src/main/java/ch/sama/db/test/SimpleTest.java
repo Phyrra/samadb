@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static ch.sama.db.query.select.WhereCondition.gt;
 
-public class Test {
+public class SimpleTest {
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         Datastore datastore = new Datastore();

@@ -1,5 +1,6 @@
 package ch.sama.db.query.select;
 
+import ch.sama.db.Datastore;
 import ch.sama.db.data.DataContext;
 import ch.sama.db.data.Tupel;
 import ch.sama.db.query.IStatement;
@@ -10,11 +11,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SelectJoinAsOn implements IStatement {
-    private SelectJoinAs parent;
+public class SelectJoinOn implements IStatement {
+	private Datastore datastore;
+    private ISelectJoin parent;
     private Function<Map<String, Map<String, Object>>, Boolean> filter;
 
-    SelectJoinAsOn(SelectJoinAs parent, Function<Map<String, Map<String, Object>>, Boolean> filter) {
+    SelectJoinOn(Datastore datastore, ISelectJoin parent, Function<Map<String, Map<String, Object>>, Boolean> filter) {
+    	this.datastore = datastore;
         this.parent = parent;
         this.filter = filter;
     }
@@ -39,6 +42,6 @@ public class SelectJoinAsOn implements IStatement {
     }
 
     public SelectJoin join(String table) {
-        return new SelectJoin(parent.getDatastore(),this, table);
+        return new SelectJoin(datastore,this, table);
     }
 }
