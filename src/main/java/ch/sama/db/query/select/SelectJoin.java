@@ -23,6 +23,10 @@ public class SelectJoin implements ISelectJoin {
     	return getContext(JoinBuilder.Type.INNER, table, filter);
 	}
 
+	DataContext getContext(JoinBuilder.Type type, Function<Map<String, Map<String, Object>>, Boolean> filter) {
+    	return getContext(type, table, filter);
+	}
+
     DataContext getContext(JoinBuilder.Type type, String alias, Function<Map<String, Map<String, Object>>, Boolean> filter) {
     	return new JoinBuilder(type, datastore, parent.getContext(), table)
 				.buildContext(alias, filter);
@@ -32,6 +36,18 @@ public class SelectJoin implements ISelectJoin {
     public DataContext getFilteredContext(DataContext context) {
         return parent.getFilteredContext(context);
     }
+
+    public SelectJoinType inner() {
+    	return new SelectJoinType(datastore, this, JoinBuilder.Type.INNER);
+	}
+
+    public SelectJoinType left() {
+    	return new SelectJoinType(datastore, this, JoinBuilder.Type.LEFT);
+	}
+
+	public SelectJoinType right() {
+    	return new SelectJoinType(datastore, this, JoinBuilder.Type.RIGHT);
+	}
 
     public SelectJoinAs as(String alias) {
         return new SelectJoinAs(datastore, this, alias);

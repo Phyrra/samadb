@@ -2,40 +2,37 @@ package ch.sama.db.query.select;
 
 import ch.sama.db.Datastore;
 import ch.sama.db.data.DataContext;
-import ch.sama.db.data.Tupel;
-import ch.sama.db.query.IStatement;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class SelectJoinAs implements ISelectJoin {
+public class SelectJoinType implements ISelectJoin {
 	private Datastore datastore;
-    private ISelectJoin parent;
-    private String alias;
+    private SelectJoin parent;
+    private JoinBuilder.Type type;
 
-    SelectJoinAs(Datastore datastore, ISelectJoin parent, String alias) {
+    SelectJoinType(Datastore datastore, SelectJoin parent, JoinBuilder.Type type) {
     	this.datastore = datastore;
         this.parent = parent;
-        this.alias = alias;
+        this.type = type;
     }
 
     @Override
     public DataContext getContext(Function<Map<String, Map<String, Object>>, Boolean> filter) {
-    	if (parent instanceof SelectJoin) {
-			return ((SelectJoin) parent).getContext(JoinBuilder.Type.INNER, alias, filter);
-		}
-
-		if (parent instanceof SelectJoinType) {
-    		return ((SelectJoinType) parent).getContext(alias, filter);
-		}
-
-		throw new RuntimeException("Illegal Operation"); // TODO: clean this mess up
+        return parent.getContext(type, filter);
     }
+
+    DataContext getContext(String alias, Function<Map<String, Map<String, Object>>, Boolean> filter) {
+    	return parent.getContext(type, alias, filter);
+	}
 
 	@Override
 	public DataContext getFilteredContext(DataContext context) {
 		return parent.getFilteredContext(context);
+	}
+
+	public SelectJoinAs as(String alias) {
+		return new SelectJoinAs(datastore, this, alias);
 	}
 
     public SelectJoinOn on(Function<Map<String, Map<String, Object>>, Boolean> filter) {
