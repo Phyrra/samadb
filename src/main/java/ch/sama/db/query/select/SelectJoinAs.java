@@ -2,19 +2,16 @@ package ch.sama.db.query.select;
 
 import ch.sama.db.Datastore;
 import ch.sama.db.data.DataContext;
-import ch.sama.db.data.Tupel;
-import ch.sama.db.query.IStatement;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class SelectJoinAs implements ISelectJoin {
+public class SelectJoinAs implements ISelectJoin2 {
 	private Datastore datastore;
-    private ISelectJoin parent;
+    private ISelectJoin1 parent;
     private String alias;
 
-    SelectJoinAs(Datastore datastore, ISelectJoin parent, String alias) {
+    SelectJoinAs(Datastore datastore, ISelectJoin1 parent, String alias) {
     	this.datastore = datastore;
         this.parent = parent;
         this.alias = alias;
@@ -22,15 +19,7 @@ public class SelectJoinAs implements ISelectJoin {
 
     @Override
     public DataContext getContext(Function<Map<String, Map<String, Object>>, Boolean> filter) {
-    	if (parent instanceof SelectJoin) {
-			return ((SelectJoin) parent).getContext(JoinBuilder.Type.INNER, alias, filter);
-		}
-
-		if (parent instanceof SelectJoinType) {
-    		return ((SelectJoinType) parent).getContext(alias, filter);
-		}
-
-		throw new RuntimeException("Illegal Operation"); // TODO: clean this mess up
+    	return parent.getContext(alias, filter);
     }
 
 	@Override

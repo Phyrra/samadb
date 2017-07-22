@@ -5,7 +5,7 @@ import ch.sama.db.data.DataContext;
 import java.util.Map;
 import java.util.function.Function;
 
-public interface ISelectJoin {
-	DataContext getContext(Function<Map<String, Map<String, Object>>, Boolean> filter);
+public interface ISelectJoin1 {
+	DataContext getContext(String alias, Function<Map<String, Map<String, Object>>, Boolean> filter);
 	DataContext getFilteredContext(DataContext context);
 }

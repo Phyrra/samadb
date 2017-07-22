@@ -75,7 +75,7 @@ public class JoinTest {
 
         List<List<Tupel>> result = datastore.select("c.name", "a.bank")
                 .from("client").as("c")
-				.join("account").as("a").on(eq("c.id", "a.ref"))
+				.join("account").left().as("a").on(eq("c.id", "a.ref"))
                 .execute();
 
         printResult(result);

@@ -6,7 +6,7 @@ import ch.sama.db.data.DataContext;
 import java.util.Map;
 import java.util.function.Function;
 
-public class SelectJoinType implements ISelectJoin {
+public class SelectJoinType implements ISelectJoin1, ISelectJoin2 {
 	private Datastore datastore;
     private SelectJoin parent;
     private JoinBuilder.Type type;
@@ -22,7 +22,8 @@ public class SelectJoinType implements ISelectJoin {
         return parent.getContext(type, filter);
     }
 
-    DataContext getContext(String alias, Function<Map<String, Map<String, Object>>, Boolean> filter) {
+    @Override
+    public DataContext getContext(String alias, Function<Map<String, Map<String, Object>>, Boolean> filter) {
     	return parent.getContext(type, alias, filter);
 	}
 

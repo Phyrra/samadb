@@ -7,7 +7,7 @@ import ch.sama.db.query.IStatement;
 import java.util.*;
 import java.util.function.Function;
 
-public class SelectJoin implements ISelectJoin {
+public class SelectJoin implements ISelectJoin1, ISelectJoin2 {
     private Datastore datastore;
     private IStatement parent;
     private String table;
@@ -21,6 +21,11 @@ public class SelectJoin implements ISelectJoin {
 	@Override
 	public DataContext getContext(Function<Map<String, Map<String, Object>>, Boolean> filter) {
     	return getContext(JoinBuilder.Type.INNER, table, filter);
+	}
+
+	@Override
+	public DataContext getContext(String alias, Function<Map<String, Map<String, Object>>, Boolean> filter) {
+    	return getContext(JoinBuilder.Type.INNER, alias, filter);
 	}
 
 	DataContext getContext(JoinBuilder.Type type, Function<Map<String, Map<String, Object>>, Boolean> filter) {
