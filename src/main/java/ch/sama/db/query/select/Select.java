@@ -84,11 +84,11 @@ public class Select implements IStatement{
         return getContext().getFlattened();
     }
 
-    public SelectFrom from(Table table) {
+    public From from(Table table) {
         return from(table.getName());
     }
 
-    public SelectFrom from(String table) {
-        return new SelectFrom(this, table);
+    public From from(String table) {
+        return new From(this, table);
     }
 }

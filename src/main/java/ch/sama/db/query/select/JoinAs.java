@@ -6,12 +6,12 @@ import ch.sama.db.data.DataContext;
 import java.util.Map;
 import java.util.function.Function;
 
-public class SelectJoinAs implements ISelectJoin2 {
+public class JoinAs implements IJoin2 {
 	private Datastore datastore;
-    private ISelectJoin1 parent;
+    private IJoin1 parent;
     private String alias;
 
-    SelectJoinAs(Datastore datastore, ISelectJoin1 parent, String alias) {
+    JoinAs(Datastore datastore, IJoin1 parent, String alias) {
     	this.datastore = datastore;
         this.parent = parent;
         this.alias = alias;
@@ -27,7 +27,7 @@ public class SelectJoinAs implements ISelectJoin2 {
 		return parent.getFilteredContext(context);
 	}
 
-    public SelectJoinOn on(Function<Map<String, Map<String, Object>>, Boolean> filter) {
-        return new SelectJoinOn(datastore, this, filter);
+    public JoinOn on(Function<Map<String, Map<String, Object>>, Boolean> filter) {
+        return new JoinOn(datastore, this, filter);
     }
 }

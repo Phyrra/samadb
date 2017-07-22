@@ -1,7 +1,6 @@
 package ch.sama.db.query.select;
 
 import ch.sama.db.Datastore;
-import ch.sama.db.base.Table;
 import ch.sama.db.base.UnknownTableException;
 import ch.sama.db.data.DataContext;
 import ch.sama.db.data.DataRow;
@@ -14,11 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class SelectFrom implements IStatement {
+public class From implements IStatement {
     private Select parent;
     private String table;
 
-    SelectFrom(Select parent, String table) {
+    From(Select parent, String table) {
         this.parent = parent;
         this.table = table;
     }
@@ -67,15 +66,15 @@ public class SelectFrom implements IStatement {
         return getFilteredContext(getContext()).getFlattened();
     }
 
-    public SelectFromAs as(String alias) {
-        return new SelectFromAs(this, alias);
+    public FromAs as(String alias) {
+        return new FromAs(this, alias);
     }
 
-    public SelectWhere where(Function<Map<String, Map<String, Object>>, Boolean> filter) {
-        return new SelectWhere(this, filter);
+    public Where where(Function<Map<String, Map<String, Object>>, Boolean> filter) {
+        return new Where(this, filter);
     }
 
-    public SelectJoin join(String table) {
-        return new SelectJoin(getDatastore(), this, table);
+    public Join join(String table) {
+        return new Join(getDatastore(), this, table);
     }
 }

@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class SelectJoinOn implements IStatement {
+public class JoinOn implements IStatement {
 	private Datastore datastore;
-    private ISelectJoin2 parent;
+    private IJoin2 parent;
     private Function<Map<String, Map<String, Object>>, Boolean> filter;
 
-    SelectJoinOn(Datastore datastore, ISelectJoin2 parent, Function<Map<String, Map<String, Object>>, Boolean> filter) {
+    JoinOn(Datastore datastore, IJoin2 parent, Function<Map<String, Map<String, Object>>, Boolean> filter) {
     	this.datastore = datastore;
         this.parent = parent;
         this.filter = filter;
@@ -35,11 +35,11 @@ public class SelectJoinOn implements IStatement {
         return getFilteredContext(getContext()).getFlattened();
     }
 
-    public SelectWhere where(Function<Map<String, Map<String, Object>>, Boolean> filter) {
-        return new SelectWhere(this, filter);
+    public Where where(Function<Map<String, Map<String, Object>>, Boolean> filter) {
+        return new Where(this, filter);
     }
 
-    public SelectJoin join(String table) {
-        return new SelectJoin(datastore,this, table);
+    public Join join(String table) {
+        return new Join(datastore,this, table);
     }
 }

@@ -8,8 +8,7 @@ import ch.sama.db.data.Tupel;
 import java.util.HashMap;
 import java.util.List;
 
-import static ch.sama.db.query.select.WhereCondition.eq;
-import static ch.sama.db.query.select.WhereCondition.gt;
+import static ch.sama.db.query.select.Condition.eq;
 
 public class JoinTest {
     @SuppressWarnings("unchecked")

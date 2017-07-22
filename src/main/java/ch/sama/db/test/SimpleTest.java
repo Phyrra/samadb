@@ -7,9 +7,8 @@ import ch.sama.db.data.Tupel;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static ch.sama.db.query.select.WhereCondition.gt;
+import static ch.sama.db.query.select.Condition.gt;
 
 public class SimpleTest {
     @SuppressWarnings("unchecked")

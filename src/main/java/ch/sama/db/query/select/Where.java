@@ -10,11 +10,11 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SelectWhere implements IStatement {
+public class Where implements IStatement {
     private IStatement parent;
     private Function<Map<String, Map<String, Object>>, Boolean> filter;
 
-    SelectWhere(IStatement parent, Function<Map<String, Map<String, Object>>, Boolean> filter) {
+    Where(IStatement parent, Function<Map<String, Map<String, Object>>, Boolean> filter) {
         this.parent = parent;
         this.filter = filter;
     }

@@ -7,7 +7,7 @@ import ch.sama.db.data.UnknownAliasException;
 import java.util.Map;
 import java.util.function.Function;
 
-public class WhereCondition {
+public class Condition {
     private static final double EPS = 1e-6;
 
     private static double toNumber(Object value) throws NotANumberException {

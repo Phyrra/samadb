@@ -6,12 +6,12 @@ import ch.sama.db.data.DataContext;
 import java.util.Map;
 import java.util.function.Function;
 
-public class SelectJoinType implements ISelectJoin1, ISelectJoin2 {
+public class JoinType implements IJoin1, IJoin2 {
 	private Datastore datastore;
-    private SelectJoin parent;
+    private Join parent;
     private JoinBuilder.Type type;
 
-    SelectJoinType(Datastore datastore, SelectJoin parent, JoinBuilder.Type type) {
+    JoinType(Datastore datastore, Join parent, JoinBuilder.Type type) {
     	this.datastore = datastore;
         this.parent = parent;
         this.type = type;
@@ -32,11 +32,11 @@ public class SelectJoinType implements ISelectJoin1, ISelectJoin2 {
 		return parent.getFilteredContext(context);
 	}
 
-	public SelectJoinAs as(String alias) {
-		return new SelectJoinAs(datastore, this, alias);
+	public JoinAs as(String alias) {
+		return new JoinAs(datastore, this, alias);
 	}
 
-    public SelectJoinOn on(Function<Map<String, Map<String, Object>>, Boolean> filter) {
-        return new SelectJoinOn(datastore, this, filter);
+    public JoinOn on(Function<Map<String, Map<String, Object>>, Boolean> filter) {
+        return new JoinOn(datastore, this, filter);
     }
 }

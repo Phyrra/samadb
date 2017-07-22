@@ -7,12 +7,12 @@ import ch.sama.db.query.IStatement;
 import java.util.*;
 import java.util.function.Function;
 
-public class SelectJoin implements ISelectJoin1, ISelectJoin2 {
+public class Join implements IJoin1, IJoin2 {
     private Datastore datastore;
     private IStatement parent;
     private String table;
 
-    SelectJoin(Datastore datastore, IStatement parent, String table) {
+    Join(Datastore datastore, IStatement parent, String table) {
         this.datastore = datastore;
         this.parent = parent;
         this.table = table;
@@ -42,23 +42,23 @@ public class SelectJoin implements ISelectJoin1, ISelectJoin2 {
         return parent.getFilteredContext(context);
     }
 
-    public SelectJoinType inner() {
-    	return new SelectJoinType(datastore, this, JoinBuilder.Type.INNER);
+    public JoinType inner() {
+    	return new JoinType(datastore, this, JoinBuilder.Type.INNER);
 	}
 
-    public SelectJoinType left() {
-    	return new SelectJoinType(datastore, this, JoinBuilder.Type.LEFT);
+    public JoinType left() {
+    	return new JoinType(datastore, this, JoinBuilder.Type.LEFT);
 	}
 
-	public SelectJoinType right() {
-    	return new SelectJoinType(datastore, this, JoinBuilder.Type.RIGHT);
+	public JoinType right() {
+    	return new JoinType(datastore, this, JoinBuilder.Type.RIGHT);
 	}
 
-    public SelectJoinAs as(String alias) {
-        return new SelectJoinAs(datastore, this, alias);
+    public JoinAs as(String alias) {
+        return new JoinAs(datastore, this, alias);
     }
 
-	public SelectJoinOn on(Function<Map<String, Map<String, Object>>, Boolean> filter) {
-		return new SelectJoinOn(datastore, this, filter);
+	public JoinOn on(Function<Map<String, Map<String, Object>>, Boolean> filter) {
+		return new JoinOn(datastore, this, filter);
 	}
 }
