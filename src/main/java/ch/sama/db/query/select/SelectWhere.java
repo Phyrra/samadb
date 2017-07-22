@@ -23,12 +23,9 @@ public class SelectWhere implements IStatement {
     public DataContext getContext() {
         DataContext context = parent.getContext();
 
-        Set<String> knownAliases = context.getKnownAliases();
-        List<Map<String, Map<String, Object>>> data = context.getData();
-
         return new DataContext(
-                knownAliases,
-                data.stream()
+				context.getKnownAliases(),
+				context.getData().stream()
                         .filter(filter::apply)
                         .collect(Collectors.toList())
         );

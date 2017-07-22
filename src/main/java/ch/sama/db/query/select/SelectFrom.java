@@ -37,7 +37,7 @@ public class SelectFrom implements IStatement {
         DataSet data = datastore.getData(table);
 
         DataContext context = new DataContext();
-        context.registerAlias(alias);
+        context.registerAlias(alias, datastore.getTable(table));
 
         data.getRows().stream()
                 .map(DataRow::toMap)

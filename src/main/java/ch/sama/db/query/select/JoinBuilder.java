@@ -40,14 +40,11 @@ class JoinBuilder {
 			}
 
 			DataSet tableData = datastore.getData(table);
-			context.registerAlias(alias);
-
-			Set<String> knownAliases = context.getKnownAliases();
-			List<Map<String, Map<String, Object>>> data = context.getData();
+			context.registerAlias(alias, datastore.getTable(table));
 
 			List<Map<String, Map<String, Object>>> joined = new ArrayList<>();
 
-			data.forEach(row -> {
+			context.getData().forEach(row -> {
 				tableData.getRows().stream()
 						.map(DataRow::toMap)
 						.map(rowMap -> {
@@ -67,7 +64,7 @@ class JoinBuilder {
 			});
 
 			return new DataContext(
-					knownAliases,
+					context.getKnownAliases(),
 					joined
 			);
 		}
@@ -89,17 +86,13 @@ class JoinBuilder {
 			if (!datastore.hasTable(table)) {
 				throw new UnknownTableException(table);
 			}
-			Table tbl = datastore.getTable(table);
 
 			DataSet tableData = datastore.getData(table);
-			context.registerAlias(alias);
-
-			Set<String> knownAliases = context.getKnownAliases();
-			List<Map<String, Map<String, Object>>> data = context.getData();
+			context.registerAlias(alias, datastore.getTable(table));
 
 			List<Map<String, Map<String, Object>>> joined = new ArrayList<>();
 
-			data.forEach(row -> {
+			context.getData().forEach(row -> {
 				List<Map<String, Map<String, Object>>> results = tableData.getRows().stream()
 						.map(DataRow::toMap)
 						.map(rowMap -> {
@@ -129,7 +122,7 @@ class JoinBuilder {
 			});
 
 			return new DataContext(
-					knownAliases,
+					context.getKnownAliases(),
 					joined
 			).fill();
 		}
@@ -151,12 +144,10 @@ class JoinBuilder {
 			if (!datastore.hasTable(table)) {
 				throw new UnknownTableException(table);
 			}
-			Table tbl = datastore.getTable(table);
 
 			DataSet tableData = datastore.getData(table);
-			context.registerAlias(alias);
+			context.registerAlias(alias, datastore.getTable(table));
 
-			Set<String> knownAliases = context.getKnownAliases();
 			List<Map<String, Map<String, Object>>> data = context.getData();
 
 			List<Map<String, Map<String, Object>>> joined = new ArrayList<>();
@@ -191,7 +182,7 @@ class JoinBuilder {
 					});
 
 			return new DataContext(
-					knownAliases,
+					context.getKnownAliases(),
 					joined
 			).fill();
 		}

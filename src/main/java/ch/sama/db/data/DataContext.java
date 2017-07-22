@@ -1,28 +1,33 @@
 package ch.sama.db.data;
 
+import ch.sama.db.base.Table;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class DataContext {
-    private Set<String> knownAliases;
+    private Map<String, Map<String, Object>> knownAliases;
     private List<Map<String, Map<String, Object>>> data;
 
     public DataContext() {
-        knownAliases = new HashSet<>();
+        knownAliases = new HashMap<>();
         data = new ArrayList<>();
     }
 
-    public DataContext(Set<String> knownAliases, List<Map<String, Map<String, Object>>> data) {
+    public DataContext(Map<String, Map<String, Object>> knownAliases, List<Map<String, Map<String, Object>>> data) {
         this.knownAliases = knownAliases;
         this.data = data;
     }
 
-    public void registerAlias(String alias) {
-        if (knownAliases.contains(alias)) {
+    public void registerAlias(String alias, Table table) {
+        if (knownAliases.containsKey(alias)) {
             throw new DuplicateAliasException(alias);
         }
 
-        knownAliases.add(alias);
+        Map<String, Object> empty = new HashMap<>();
+        table.getFields().forEach(field -> empty.put(field.getName(), null));
+
+        knownAliases.put(alias, empty);
     }
 
     public DataContext addRow(Map<String, Map<String, Object>> row) {
@@ -35,33 +40,16 @@ public class DataContext {
         return data;
     }
 
-    public Set<String> getKnownAliases() {
+    public Map<String, Map<String, Object>> getKnownAliases() {
         return knownAliases;
     }
 
     public DataContext fill() {
-    	Map<String, Map<String, Object>> fullMap = new HashMap<>();
-
-    	knownAliases.forEach(alias -> {
-    		Map<String, Object> map = data.stream()
-					.filter(row -> {
-						return row.containsKey(alias);
-					})
-					.findFirst()
-					.get()
-					.get(alias);
-
-    		Map<String, Object> empty = new HashMap<>();
-    		map.keySet().forEach(key -> empty.put(key, null));
-
-    		fullMap.put(alias, empty);
-		});
-
     	data.forEach(row -> {
-    		knownAliases.stream()
+    		knownAliases.keySet().stream()
 					.filter(alias -> !row.containsKey(alias))
 					.forEach(alias -> {
-						row.put(alias, fullMap.get(alias));
+						row.put(alias, knownAliases.get(alias));
 					});
 		});
 
