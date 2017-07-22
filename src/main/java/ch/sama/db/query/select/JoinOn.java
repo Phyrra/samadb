@@ -42,4 +42,8 @@ public class JoinOn implements IStatement {
     public Join join(String table) {
         return new Join(datastore,this, table);
     }
+
+	public Order orderBy(String key) {
+		return new Order(this, key);
+	}
 }

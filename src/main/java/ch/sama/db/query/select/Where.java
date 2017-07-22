@@ -6,7 +6,6 @@ import ch.sama.db.query.IStatement;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,4 +39,8 @@ public class Where implements IStatement {
     public List<List<Tupel>> execute() {
         return getFilteredContext(getContext()).getFlattened();
     }
+
+	public Order orderBy(String key) {
+		return new Order(this, key);
+	}
 }

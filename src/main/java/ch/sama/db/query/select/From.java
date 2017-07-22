@@ -77,4 +77,8 @@ public class From implements IStatement {
     public Join join(String table) {
         return new Join(getDatastore(), this, table);
     }
+
+    public Order orderBy(String key) {
+    	return new Order(this, key);
+	}
 }
